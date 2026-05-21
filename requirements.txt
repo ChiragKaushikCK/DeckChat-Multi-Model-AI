@@ -1,0 +1,9 @@
+streamlit>=1.38.0
+pandas
+pytz
+speechrecognition
+gtts
+langchain-core
+langchain-openai
+langchain-groq
+firebase-admin
