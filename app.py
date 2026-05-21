@@ -131,10 +131,18 @@ def text_to_speech(text):
 # ----------------------
 @st.cache_resource
 def init_firebase():
+    """Initialize Firebase connection with robust parsing"""
     try:
         if not firebase_admin._apps:
             if 'FIREBASE_CONFIG' in st.secrets:
-                cred_dict = dict(st.secrets['FIREBASE_CONFIG'])
+                raw_config = st.secrets['FIREBASE_CONFIG']
+                
+                # Check if Streamlit loaded it as a String (JSON format) or Dict (TOML format)
+                if isinstance(raw_config, str):
+                    cred_dict = json.loads(raw_config)
+                else:
+                    cred_dict = dict(raw_config)
+                    
                 cred = credentials.Certificate(cred_dict)
                 firebase_admin.initialize_app(cred)
             else:
@@ -144,7 +152,6 @@ def init_firebase():
     except Exception as e:
         st.error(f"⚠️ Firebase connection error: {str(e)}")
         return None
-
 # ----------------------
 # Authentication & DB
 # ----------------------
